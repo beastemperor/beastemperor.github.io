@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benisman2
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    
+
+    <div class="container">
+        <nav class="navbar bg-body-tertiary bg-light">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">Navbar</span>
+            </div>
+        </nav>
+        <div class="mb-5 mt-5 d-flex justify-content-center">
+            <h1 class="mt-3">Very Cool Watch Search</h1>
+        </div>
+        
+        <div class="mb-3 d-flex justify-content-center">
+            <div class="w-50 d-inline-flex p-2">
+                <input type="email" class="form-control " id="searchterms" placeholder="Omega Speedmaster">
+            </div>
+            <div class="d-inline-flex p-2">
+                <button type="button" class="btn btn-dark " onclick="getWatches()">Search</button>
+            </div>
+        </div>
+
+
+        <div class="mb-5 mt-5 row justify-content-start" id="cardappearer"></div>
+        
+    </div>
+<script>
+
+    const searchContainer = document.querySelector('#searchterms')
+    const cardAppearer = document.querySelector('#cardappearer')
+    console.log(searchContainer)
+    const getWatches = async genres => {
+        cardAppearer.innerHTML = ""
+        try {
+            const res = await fetch(`test.json`)
+            const response = await res.json()
+            // console.log(response)
+            const results = response.list
+            console.log(results)
+            const searchTerm = searchContainer.value.toLowerCase()
+            let sorted = results.sort((a, b) => {
+                if (a.brand < b.brand) {
+                    return -1;
+                }
+            });
+            let latestBrandName = ""
+            sorted.forEach(result => {
+                const name = result.name.toString().toLowerCase()
+                const brand = result.brand.toString().toLowerCase()
+                // console.log(name.includes(searchTerm))
+                // console.log(result)
+                let pass = false
+                if(name.includes(searchTerm)){
+                    // console.log("name")
+                    pass = true
+                }
+                else if (brand.includes(searchTerm)){
+                    // console.log("brand")
+                    pass = true
+                }
+                //THIS IS SHIT TIER PRACTICE BUT I'M TOO STUPID FOR "OR"
+                if(pass){
+                    console.log(name, brand)
+                    console.log("last brand name: ",latestBrandName)
+                    if(brand != latestBrandName){
+                        console.log("add brand row")
+
+                        const brandTextRow = document.createElement('div')
+                        brandTextRow.classList.add('col-10')
+                        const brandText = document.createElement('h2')
+                        brandText.innerText = result.brand
+                        brandTextRow.appendChild(brandText)
+                        cardAppearer.appendChild(brandTextRow)
+                        latestBrandName = brand
+                    }
+                    const watchBox = document.createElement('div')
+                    watchBox.classList.add('col-3', 'm-2')
+                    const watchCard = document.createElement('div')
+                    watchCard.classList.add('card')
+                    const watchCardBody = document.createElement('div')
+                    watchCardBody.classList.add('card-body')
+                    const watchCardBodyImage = document.createElement('img')
+                    watchCardBodyImage.src = result.imgsrc
+                    watchCardBodyImage.classList.add('card-img-top')
+                    const watchCardBodyHeading = document.createElement('h5')
+                    watchCardBodyHeading.classList.add('card-title', 'mt-3')
+                    watchCardBodyHeading.innerText = result.name
+                    const watchCardBodyLink = document.createElement('a')
+                    watchCardBodyLink.href = result.link
+                    watchCardBodyLink.classList.add('btn', 'btn-dark', 'text-white')
+                    watchCardBodyLink.innerText = "View Details"
+
+                    watchCardBody.appendChild(watchCardBodyImage)
+                    watchCardBody.appendChild(watchCardBodyHeading)
+                    watchCardBody.appendChild(watchCardBodyLink)
+                    
+                    watchCard.appendChild(watchCardBody)
+                    watchBox.appendChild(watchCard)
+                    cardAppearer.appendChild(watchBox)
+                    
+                }
+                    
+                })
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
